@@ -337,59 +337,40 @@ Sau khi chặn sự kiện, hệ thống cập nhật bộ đếm và phản án
 
 ### 4.2 Sơ đồ use case tổng thể
 
-```mermaid
-flowchart TD
-  NguoiLamBai["Người làm bài"]
-  TrinhDuyet["Trình duyệt"]
-  LopKiemSoatClient["Lớp kiểm soát client"]
-  TelemetryNoiBo["Telemetry nội bộ"]
-  DoNguDevHeThong["Đội dev hệ thống"]
-
-  MoBaiThi["Mở bài thi và tải tài nguyên"]
-  DungGiaoDien["Dựng giao diện Moodle và theme"]
-  DangKyListener["Đăng ký listener bảo vệ"]
-  PhatHienRoiTab["Phát hiện rời tab"]
-  ChanChuotPhai["Chặn chuột phải"]
-  ChanClipboard["Chặn copy cut paste"]
-  ChanBoiDen["Chặn bôi đen văn bản"]
-  ChanPhimTat["Chặn phím tắt clipboard"]
-  CapNhatBangHanhVi["Cập nhật bảng hành vi người dùng"]
-  GhiNhanBitmask["Ghi nhận cờ nhị phân và log kỹ thuật"]
-  PhanTichChinhSach["Phân tích tín hiệu để tinh chỉnh chính sách"]
-
-  NguoiLamBai --> MoBaiThi
-  NguoiLamBai --> PhatHienRoiTab
-  NguoiLamBai --> ChanChuotPhai
-  NguoiLamBai --> ChanClipboard
-  NguoiLamBai --> ChanBoiDen
-  NguoiLamBai --> ChanPhimTat
-
-  TrinhDuyet --> DungGiaoDien
-  TrinhDuyet --> DangKyListener
-  TrinhDuyet --> PhatHienRoiTab
-  TrinhDuyet --> ChanChuotPhai
-  TrinhDuyet --> ChanClipboard
-  TrinhDuyet --> ChanBoiDen
-  TrinhDuyet --> ChanPhimTat
-
-  LopKiemSoatClient --> DungGiaoDien
-  LopKiemSoatClient --> DangKyListener
-  LopKiemSoatClient --> PhatHienRoiTab
-  LopKiemSoatClient --> ChanChuotPhai
-  LopKiemSoatClient --> ChanClipboard
-  LopKiemSoatClient --> ChanBoiDen
-  LopKiemSoatClient --> ChanPhimTat
-  LopKiemSoatClient --> CapNhatBangHanhVi
-  LopKiemSoatClient --> GhiNhanBitmask
-
-  TelemetryNoiBo --> CapNhatBangHanhVi
-  TelemetryNoiBo --> GhiNhanBitmask
-
-  DoNguDevHeThong --> GhiNhanBitmask
-  DoNguDevHeThong --> PhanTichChinhSach
-
-  GhiNhanBitmask --> PhanTichChinhSach
-  CapNhatBangHanhVi --> PhanTichChinhSach
+```text
++------------------+      +------------------+      +----------------------+
+| Người làm bài    |      | Trình duyệt      |      | Đội dev hệ thống     |
++------------------+      +------------------+      +----------------------+
+         |                           |                           |
+         +------------+--------------+                           |
+                      |                                          |
+                      v                                          v
+        +-----------------------------------+      +-------------------------------+
+        | 1. Khởi tạo phiên làm bài         |      | 4. Phân tích tín hiệu         |
+        | - Mở bài thi và tải tài nguyên    |<-----| - Đọc bảng hành vi            |
+        | - Dựng giao diện Moodle/theme     |      | - Đọc log kỹ thuật / bitmask  |
+        | - Đăng ký listener bảo vệ         |      | - Tinh chỉnh ngưỡng/policy    |
+        +-----------------------------------+      +-------------------------------+
+                      |
+                      v
+        +-----------------------------------+
+        | 2. Kiểm soát tương tác phía client|
+        | - Phát hiện rời tab               |
+        | - Chặn chuột phải                 |
+        | - Chặn copy/cut/paste             |
+        | - Chặn bôi đen văn bản            |
+        | - Chặn phím tắt clipboard         |
+        +-----------------------------------+
+                      |
+                      v
+        +-----------------------------------+
+        | 3. Ghi nhận hành vi               |
+        | - Cập nhật bảng hành vi người dùng|
+        | - Ghi nhận cờ nhị phân / log      |
+        | - Chuẩn bị dữ liệu cho phân tích  |
+        +-----------------------------------+
+                      |
+                      +------------------------------------------> 4
 ```
 
 ### 4.3 Diễn giải use case theo ngôn ngữ nghiên cứu hệ thống
